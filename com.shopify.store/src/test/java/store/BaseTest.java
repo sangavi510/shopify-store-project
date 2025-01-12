@@ -1,12 +1,9 @@
-package com.shopify.test;
-
-import static org.testng.Assert.assertEquals;
+package store;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.util.Arrays;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -14,16 +11,10 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
@@ -31,8 +22,6 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import com.shopify.test.ScreenshotUtil;
-import com.sun.org.apache.bcel.internal.classfile.Method;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -46,7 +35,7 @@ public class BaseTest {
 	ExtentSparkReporter sparkReporter;
 	public static ExtentTest test;
 	SoftAssert soft = new SoftAssert();
-	
+
 	@BeforeSuite
 	public void setUp() {
 		sparkReporter = new ExtentSparkReporter(System.getProperty("user.dir")+"/reports/"+"extentReports.html");
@@ -56,7 +45,7 @@ public class BaseTest {
 		WebDriverManager.chromedriver().setup();
 		driver= new ChromeDriver();
 		wait=new WebDriverWait(driver,Duration.ofSeconds(10));
-		
+
 	}
 
 	@Test(priority=-1)
@@ -81,8 +70,8 @@ public class BaseTest {
 		soft.assertEquals(driver.getTitle(), "TestAssignmentStore");
 		test.log(Status.INFO, "Navigated to Home page");
 		WebElement shopNowButton = driver.findElement(By.xpath("//*[contains(text(),'Shop now')]"));
-		shopNowButton.click();		
-		//quantity offer product 
+		shopNowButton.click();
+		//quantity offer product
 
 		WebElement beachProduct1=wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[@id='CardLink-template--23824074047785__main-collection-product-grid-9583948169513']")));
 		beachProduct1.click();
@@ -106,8 +95,9 @@ public class BaseTest {
 			String originalPriceLocator = "//*[@id='prvw_originalAmount_"+(j)+"']";
 			originalPrice=driver.findElement(By.xpath(originalPriceLocator));
 			soft.assertEquals(originalPrice.getText(),originalPriceList.get(j));
-			if(j==2)
+			if(j==2) {
 				radioButtonOption.click();
+			}
 
 
 		}
@@ -203,12 +193,12 @@ public class BaseTest {
 	//
 	/*
 	 * */
-	 
+
 
 	@Test(priority=2)
 	public void verifyNonOfferProduct() throws InterruptedException {
 		test=extent.createTest("verifyNonOfferProduct","verifyNonOfferProduct");
-		
+
 		WebElement continueShopping = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[text()='Continue shopping']")));
 		continueShopping.click();
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
@@ -228,7 +218,7 @@ public class BaseTest {
 		driver.quit();
 		soft.assertAll();
 		if(result.getStatus()==ITestResult.SUCCESS)
-		{	
+		{
 			String ScreenshotPath = ScreenshotUtil.captureScreenshot(driver, result.getName());
 			test.log(Status.PASS,"Test Passed");
 			test.addScreenCaptureFromPath(ScreenshotPath);}
@@ -237,7 +227,7 @@ public class BaseTest {
 			test.log(Status.FAIL, result.getThrowable());
 			test.addScreenCaptureFromPath(ScreenshotPath);
 		}
-			
+
 	}
 
 }
